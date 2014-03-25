@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+
+<!--
+  Google HTML5 slide template
+
+  Authors: Luke Mahé (code)
+           Marcin Wichary (code and design)
+
+           Dominic Mazzoni (browser compatibility)
+           Charles Chen (ChromeVox support)
+
+  URL: http://code.google.com/p/html5slides/
+-->
+
+<html>
+  <head>
+    <title>Working offline</title>
+
+    <meta charset='utf-8'>
+    <link rel="stylesheet" type="text/css" href="firasans/stylesheet.css">
+    <link rel="stylesheet" type="text/css" href="style/styles.css">
+    <link rel="stylesheet" type="text/css" href="style/conferencia.css">
+    <script src='js/slides.js'></script>
+  </head>
+
+  <style>
+    /* Your individual styles here, or just use inline styles if that’s
+       what you want. */
+
+
+  </style>
+
+  <body style='display: none'>
+
+    <section class='slides layout-regular template-default'>
+
+      <!-- Your slides (<article>s) go here. Delete or comment out the
+           slides below. -->
+      <article class='biglogo'>
+      </article>
+
+      <article>
+        <h1>
+          Working offline
+        </h1>
+        <p>
+          https://github.com/firefoxosedu/offline_app
+        </p>
+      </article>
+
+      <article>
+        <h1>
+          Partnership
+        </h1>
+        <p>
+          Telefonica <strong id="red-heart">♥</strong> Mozilla Firefox
+        </p>
+      </article>
+
+      <article>
+        <section id="borja" class="profile">
+          <strong>Borja Salguero (@borjasalguero)</strong><br>
+          FirefoxOS Frontend Engineer. Web technologies passionate and Vespa enthusiast.
+        </section>
+        <section id="francisco" class="profile">
+          <strong>Francisco Jordano (@mepartoconmigo)</strong><br>
+          Metal head \m/. FirefoxOS addict. Software handcrafter.
+        </section>
+      </article>
+
+      <article class="fill current">
+        <h3>
+          The story: We still dont have connection everywhere
+        </h3>
+        <p>
+          <img src="style/images/tube.jpg"></img>
+        </p>
+      </article>
+
+      <article>
+        <h1>
+          How this affect us?
+        </h1>
+        <p>
+          Lack of connection can break user experience.
+        </p>
+        <p>
+          Or even worts, totally lack of any kind of experience!
+        </p>
+      </article>
+
+      <article>
+        <h1>
+          We do have mechanisms to ease those pains.
+        </h1>
+        <p>
+          Lets be aware of our connectivity.
+        </p>
+        <p>
+          And let's save data locally for further use.
+        </p>
+      </article>
+
+
+      <article>
+        Be aweare of your connectivity
+        <pre>
+if (navigator.onLine) {
+  alert('online');
+} else {
+  alert('offline');
+}
+
+window.addEventListener('offline', function onOffline() {
+  // We are offline, warn the user
+});
+window.addEventListener('online', function onOnline() {
+  // We got the connection back, perform your
+  // queued operations
+});
+        </pre>
+        <div class="source black">
+          <a href="https://developer.mozilla.org/en/docs/Online_and_offline_events">https://developer.mozilla.org/en/docs/Online_and_offline_events</a>
+        </div>
+      </article>
+
+<!--
+      <article>
+        <h1>
+          DEMO
+        </h1>
+        <p>
+          <a href="http://html5demos.com/nav-online">http://html5demos.com/nav-online</a>
+        </p>
+      </article>
+-->
+      <article>
+        <h1>
+          Save your content locally
+        </h1>
+        <p>
+          Several ways of storing in the client
+        </p>
+      </article>
+
+      <article class="fill current">
+        <h3>
+          Cookies: old, but still usable
+        </h3>
+        <p>
+          <img src="style/images/cookies.jpg"></img>
+        </p>
+      </article>
+
+      <article>
+        <h1>
+          LocalStorage
+        </h1>
+        <p>
+          Pretty simple, but synchronous.
+        </p>
+        <pre>
+localStorage.myData = 'myValue';
+
+alert(localStorage.myData);</pre>
+        <div class="source black">
+          <a href="https://developer.mozilla.org/en-US/docs/Web/Guide/API/DOM/Storage">https://developer.mozilla.org/en-US/docs/Web/Guide/API/DOM/Storage</a>
+        </div>
+      </article>
+
+      <article>
+        <h2>
+          IndexedDB
+        </h2>
+        <h5>
+          Powerful, but a not that easy API to use.
+        </h5>
+        <pre>
+var myDB;
+var request = window.indexedDB.open("MyBookShop", 1);
+
+request.onsuccess = function onSuccess(event) {
+    myDB = event.target.result;
+};
+request.onerror = function onError(event) {
+    alert('Sorry, cannot open the DB');
+};</pre>
+      </article>
+
+      <article>
+        <h2>
+          IndexedDB
+        </h2>
+        <h5>
+          It has versioning!
+        </h5>
+        <pre>
+// Once opened the connection
+request.onupgradeneeded = function onUpgradedNeeded(event) {
+    var db = event.target.result;
+    var oldVersion = event.oldVersion;
+
+    // Apply any schema upgrade if needed
+    createSchema(db);
+};</pre>
+      </article>
+
+      <article>
+        <h2>
+          IndexedDB
+        </h2>
+        <h5>
+          We can have different stores and indexes!
+        </h5>
+        <pre>
+function createSchema(db) {
+    // { 'isbn' : <String> (primary key),
+    //   'title' : <String>,
+    //   'date' : <Date>,
+    //   'author' : <String>,
+    //   'cover': <Blob>
+    // }
+
+    var objectStore = db.createObjectStore('books',
+        { keyPath: 'isbn' });
+
+    // Search by title
+    objectStore.createIndex('title', 'title');
+
+    // Search by author
+    objectStore.createIndex('author', 'author');
+}</pre>
+      </article>
+
+      <article>
+        <h2>
+          IndexedDB
+        </h2>
+        <h5>
+          We have transactions!
+        </h5>
+        <pre>
+
+var transaction = myDB.transaction(['books'], 'readwrite');
+transaction.onerror = function() { // Handle error };
+transaction.oncomplete = function() { // Handle success };
+
+var objectStore = transaction.objectStore('books');
+objectStore.add(book);
+</pre>
+      </article>
+
+      <article>
+        <h2>
+          IndexedDB
+        </h2>
+        <h5>
+          We have fast searches with the indexes and fast access with cursors.
+        </h5>
+        <pre>
+var objectStore = myDB.transaction('books').objectStore('books');
+
+var index = objectStore.index('author');
+index.openCursor().onsuccess = function(event) {
+    var cursor = event.target.result;
+    if (!cursor) {/* We finished */}
+    // Process each object in cursor.value
+    cursor.continue();
+};</pre>
+      </article>
+
+      <article>
+        <h3>
+          IndexedDB
+        </h3>
+        <p>
+          The good parts.
+        </p>
+        <p>
+          Several smart minds have put some work together around it.
+        </p>
+        <p>
+          <div>
+            <ul>
+              <li>DB.js : <a href="http://aaronpowell.github.io/db.js/">http://aaronpowell.github.io/db.js/</a></li>
+              <li>JQuery : <a href="https://github.com/axemclion/jquery-indexeddb">https://github.com/axemclion/jquery-indexeddb</a></li>
+              <li>IDBWrapper: <a href="https://github.com/jensarps/IDBWrapper">https://github.com/jensarps/IDBWrapper</a></li>
+              <li>PouchDB : <a href="http://pouchdb.com/">http://pouchdb.com/</a></li>
+              <li>Localforage : <a href="https://github.com/mozilla/localForage">https://github.com/mozilla/localForage</a></li>
+            </ul>
+          </div>
+        </p>
+      </article>
+
+      <article>
+        <h3>
+          APP Cache: Want to cache resources?
+        </h3>
+        <pre>
+CACHE MANIFEST
+# version Mon Mar 24 2014 23:23:23 GMT+0000 (GMT)
+CACHE:
+index.html
+icons/60.jpg
+icons/128.jpg
+js/app.js
+js/l10n.js
+js/links.js
+js/localforage.js
+locales/basic_app.en-US.properties
+locales/locales.ini
+style/app.css
+style/images/128.png
+style/images/60.png
+NETWORK:
+*
+FALLBACK:</pre>
+      </article>
+
+      <article>
+        <h3>App Cache can be integrated into your application manifest</h3>
+        <pre>
+{
+  "name": "My App",
+  "description": "My elevator pitch goes here",
+  "launch_path": "/",
+  "appcache_path": "manifest.appcache",
+  "icons": {
+    "128": "/img/icon-128.png"
+  },
+  "developer": {
+    "name": "Your name or organization",
+    "url": "http://your-homepage-here.org"
+  },
+  "default_locale": "en"
+}</pre>
+      </article>
+
+      <article>
+        <h1>
+          Remember
+        </h1>
+        <p>
+          Packaged apps! They contain absolutely everything on a zip file!
+        </p>
+      </article>
+
+      <article class='biglogo2'>
+      </article>
+
+    </section>
+
+  </body>
+</html>
