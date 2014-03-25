@@ -293,6 +293,37 @@ index.openCursor().onsuccess = function(event) {
       </article>
 
       <article>
+        <h1>DataStore API</h1>
+        <p>Simplified key/value asynchronous storage that can be shared <b>across domains</b></p>.
+        <div class="source black">
+          Right now available just for certified apps in Firefox OS.
+        </div>
+      </article>
+
+      <article>
+        <h3>DataStore API</h3>
+        <pre>
+// Here we retrieve the list of DataStores called 'contacts'.
+navigator.getDataStores("contacts").then(function(stores) {
+  // Retrieve an object from the first DataStore.
+  stores[0].get(42).then(function(obj) {
+    // ...
+    });
+  });
+
+  // Delete an object
+  stores[0].remove(23).then(function(success) {
+    //
+  });
+
+  // Storing a new object
+  stores[0].add({ "nick": "Roberto", "email" : "a@b.c" }).then(function(id) {
+    // ...
+  });
+});</pre>
+      </article>
+
+      <article>
         <h3>
           APP Cache: Want to cache resources?
         </h3>
