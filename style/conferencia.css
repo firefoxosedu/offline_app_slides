@@ -86,3 +86,8 @@ h2 {
 #red-heart {
   color: #FF4E00;
 }
+
+a {
+  text-decoration: none;
+  color:#666 !important;
+}
